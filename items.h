@@ -1,6 +1,6 @@
 #pragma once
-#ifndef items.h
-#define items.h
+#ifndef items_h
+#define items_h
 
 using namespace std;
 
@@ -18,4 +18,4 @@ public:
 	int get_item_modifier();
 };
 
-#endif items.h
+#endif
