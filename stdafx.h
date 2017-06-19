@@ -8,6 +8,7 @@
 #include "targetver.h"
 
 #include <stdio.h>
+#include <fstream>
 #include <tchar.h>
 #include <conio.h>
 #include <iostream>
@@ -17,13 +18,13 @@
 #include <vector>
 #include <windows.h>
 
-//stale identyfikujace modyfikowany atrybut przedmiotu
+///stale identyfikujace modyfikowany atrybut przedmiotu
 const int Attribute_Strength = 427;
 const int Attribute_Fatty = 428;
 const int Attribute_Dexterity = 429;
 const int Attribute_Luck = 430;
 
-//stale zawierajace ID pomieszczenia
+///stale zawierajace ID pomieszczenia
 const int ENTRANCE = 572;
 const int C1 = 573;
 const int CL1 = 574;
@@ -41,6 +42,14 @@ const int PRE_BOSS = 664;
 const int BOSS = 665;
 const int HELL = 666;
 const int WIN = 777;
+
+///stale 'pseudopomieszczen' wyboru
+const int C1_Choice = 941;
+const int CL2_Choice = 942;
+const int CR2_Choice = 943;
+const int CC1_Choice = 944;
+const int CR3_Choice = 945;
+
 
 
 // TODO: reference additional headers your program requires here

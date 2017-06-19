@@ -43,6 +43,25 @@ void entertocontinue(string aby)							/// "Nacisnij Enter aby (zadana wiadomosc
 	} while (!validexit);
 }
 
+void waitsec(short seconds)										///funkcja "czekaj" dodatkowo z oddzieleniem linii
+{																///zwyklego "Sleep" uzywam kiedy nie chce odstepow.
+	if ((seconds == 1) || (seconds == 2))
+	{
+		Sleep(1000 * seconds);
+		cout << "\n\n";
+	}
+	else
+	{
+		cout << "\n";
+		for (int i = 1; i <= seconds; i++)
+		{
+			Sleep(1000);
+			cout << ". ";
+		}
+		cout << "\n\n";
+	}
+}
+
 	Character::Character()
 	{
 		this->Level = 1;
@@ -54,17 +73,19 @@ void entertocontinue(string aby)							/// "Nacisnij Enter aby (zadana wiadomosc
 		this->Level = lvl;
 		this->room_placement = placement;
 		int AttributePoints = 12 + lvl;						///punkty do wydania na cechy: dla lvl 1: 12 + 1
+		this->Strength = 1;
+		this->Dexterity = 1;
 		this->Fatty = lvl + rand() % AttributePoints;									
 		AttributePoints -= this->Fatty;
 		if (AttributePoints > 0)
 		{
-			this->Strength = 1 + rand() % AttributePoints;
+			this->Strength += rand() % AttributePoints;
 			int AttributePoints2 = AttributePoints;
-			AttributePoints2 -= this->Strength;
-			if(AttributePoints2 >0)
+			AttributePoints2 -= this->Strength - 1;
+			if(AttributePoints2 > 0)
 			{
-				this->Dexterity = 1 + rand() % AttributePoints2;
-				AttributePoints -= (this->Dexterity)+(this->Strength);
+				this->Dexterity += rand() % AttributePoints2;
+				AttributePoints -= (this->Dexterity - 1)+(this->Strength - 1);
 			}
 		}
 		
@@ -75,21 +96,29 @@ void entertocontinue(string aby)							/// "Nacisnij Enter aby (zadana wiadomosc
 	}
 
 	string Character::get_Name() { return this->Name; }							///metody do operowania statystykami
+	void Character::set_Name(string name) { this->Name = name; }
+	void Character::set_Level(int lvl) { this->Level = lvl; }
 	int Character::get_Level() { return this->Level; }
 	short Character::get_placement() {return this->room_placement;}
+	void Character::set_placement(short dest) { this->room_placement = dest; }
 	int Character::get_Strength() { return this->Strength; }
+	void Character::set_Strength(int str) { this->Strength = str; }
 	void Character::Strength_up(int change) { this->Strength += change; }
 	int Character::get_Fatty() { return this->Fatty; }
+	void Character::set_Fatty(int fat) { this->Fatty = fat; }
 	void Character::Fatty_up(int change) 
 	{
 		this->Fatty += change;
 		set_Max_Hp();
 	}
 	int Character::get_Current_Hp() { return this->Current_Hp; }
+	void Character::set_Current_Hp(int value) { this->Current_Hp = value; }
 	int Character::get_Max_Hp() { return this->Max_Hp; }
 	void Character::set_Max_Hp() { this->Max_Hp = 100 + ((this->Fatty) * 10); }
+	void Character::load_Max_Hp(int value) { this->Max_Hp = value; }
 	void Character::print_hp() { cout << "\nPoziom zdrowia " << get_Name() << ": " << get_Current_Hp() << "/" << get_Max_Hp(); }
 	int Character::get_Dexterity() { return this->Dexterity; }
+	void Character::set_Dexterity(int value) { this->Dexterity = value; }
 	void Character::Dexterity_up(int change) { this->Dexterity += change; }
 
 	void Character::print_stats()
@@ -120,6 +149,8 @@ void entertocontinue(string aby)							/// "Nacisnij Enter aby (zadana wiadomosc
 		this->Name = "I'M DEAD. LEAVE ME ALONE.";
 	}
 
+	Player::Player() {}
+
 	Player::Player(int lv)										///konstruktor postaci gracza
 	{
 		this->Level = lv;
@@ -134,6 +165,7 @@ void entertocontinue(string aby)							/// "Nacisnij Enter aby (zadana wiadomosc
 		cout << "\nWitaj w kreatorze postaci!"
 			<< "\n\nPodaj imie swojego bohatera:		";
 		cin >> this->Name;
+		draw_line();
 		cout << "\nMasz dokladnie " << StartingAttributePoints << " wolnych punktow cech. Wydaj je madrze!"
 			<< "\n\nDostepne cechy to:\n1. Masa&Rzezba: Okresla stopien napakowania studenciaka, a co za tym idzie, sile"
 			<< "\n2. Tluszczyk: Im wiecej kochanego cialka tym mniej bolu zadaja ciosy." 
@@ -200,8 +232,8 @@ void entertocontinue(string aby)							/// "Nacisnij Enter aby (zadana wiadomosc
 					validchoice = false;
 				}
 			} while (!validchoice);
-			Sleep(1000);
-		cout << "\nNa farta pozostalo cale " << StartingAttributePoints << " punktow";
+			waitsec(1);
+		cout << "Na farta pozostalo cale " << StartingAttributePoints << " punktow";
 		this->Luck = 1 + StartingAttributePoints;
 		StartingAttributePoints -= (this->Luck) - 1;
 		Sleep(1000);
@@ -211,6 +243,11 @@ void entertocontinue(string aby)							/// "Nacisnij Enter aby (zadana wiadomosc
 		print_stats();
 		Sleep(1000);
 		entertocontinue("rozpoczac przygode...");
+	}
+
+	Player::Player(string loadname)
+	{
+		this->Name = loadname;
 	}
 
 	void Player::print_stats()
@@ -239,56 +276,46 @@ void entertocontinue(string aby)							/// "Nacisnij Enter aby (zadana wiadomosc
 	{
 		this->Equipment.push_back(added_item);
 		int tempAttr = added_item.get_Item_Attribute();
-		cout << "\n\nZnalazles " << added_item.get_item_Name() << "!\n";
+		waitsec(3);
+		cout << "Znalazles " << added_item.get_item_Name() << "!\n";
 			switch (tempAttr)									///sprawdzenie, jaki atrybut boostuje przedmiot
 			{
 				int tempMod;
 			case Attribute_Strength:
-				cout << "Masa&Rzezba +" << added_item.get_item_modifier() << "\n";
+				cout << "Masa&Rzezba +" << added_item.get_item_modifier();
 				tempMod = added_item.get_item_modifier();
 				this->Strength_up(tempMod);
 				break;
 			case Attribute_Fatty:
-				cout << "Tluszczyk +" << added_item.get_item_modifier() << "\n";
+				cout << "Tluszczyk +" << added_item.get_item_modifier();
 				tempMod = added_item.get_item_modifier();
 				this->Fatty_up(tempMod);
 				break;
 			case Attribute_Dexterity:
-				cout << "Spryt +" << added_item.get_item_modifier() << "\n";
+				cout << "Spryt +" << added_item.get_item_modifier();
 				tempMod = added_item.get_item_modifier();
 				this->Dexterity_up(tempMod);
 				break;
 			case Attribute_Luck:
-				cout << "Fart +" << added_item.get_item_modifier() << "\n";
+				cout << "Fart +" << added_item.get_item_modifier();
 				tempMod = added_item.get_item_modifier();
 				this->Luck_up(tempMod);
 				break;
 			}
+			waitsec(2);
+			entertocontinue("kontynuowac...");
 	}
-
-	void Player::print_equipment()
+	void Player::Level_up()
 	{
-		draw_line();
-		size_t eq_size = this->Equipment.size();
-		cout << "Twoj ekwipunek:\n";
-			for(size_t i = 0;i<eq_size;i++)
-			{ 
-				cout << "\n" << i + 1 << ". " << this->Equipment[i].get_item_Name();
-			}
-		draw_line();
-	}
-
-	void Player::Level_up() 
-	{ 
 		this->Level++;
 		this->Fatty_up(1);									///razem z Fatty rosnie zdrowie, to zwieksza sie zawsze
 
+		draw_line();
 		cout << "\n\nAwansowales na poziom " << get_Level() << "!"
 			<< "\nWybierz atrybut (numer), ktory chcesz podniesc: "
-			<< "\n1. Masa&Rzezba\n2. Spryt\n3. Fart\n";
+			<< "\n1. Masa&Rzezba\n2. Spryt\n3. Fart\t\t\t";
 		short choice;
 		bool valid;
-		
 		do
 		{
 			cin >> choice;
@@ -315,8 +342,55 @@ void entertocontinue(string aby)							/// "Nacisnij Enter aby (zadana wiadomosc
 				break;
 			}
 		} while (!valid);
+		Sleep(1000);
+		entertocontinue("kontynuowac...");
+		draw_line();
+	}
+
+	void Player::load_item_to_eq(Item & added)
+	{
+		this->Equipment.push_back(added);
+	}
+
+		void Player::add_item_load(string name)
+	{
+		Item new_item(name, Attribute_Luck, 0);
+		this->load_item_to_eq(new_item);
+	}
+
+	void Player::print_equipment()
+	{
+		draw_line();
+		size_t eq_size = this->Equipment.size();
+		cout << "Twoj ekwipunek:\n";
+			for(size_t i = 0;i<eq_size;i++)
+			{ 
+				cout << "\n" << i + 1 << ". " << this->Equipment[i].get_item_Name();
+			}
+		draw_line();
 		entertocontinue("kontynuowac...");
 	}
+
+	size_t Player::get_eq_size()
+	{
+		return this->Equipment.size();
+	}
+
+	string Player::get_eq_item_name(int a)
+	{
+		return this->Equipment[a].get_item_Name();
+	}
+
+	int Player::get_eq_item_attribute(int a)
+	{
+		return this->Equipment[a].get_Item_Attribute();
+	}
+
+	int Player::get_eq_item_modifier(int a)
+	{
+		return this->Equipment[a].get_item_modifier();
+	}
+
 	void Player::Set_Next_Lvl_Xp()
 	{
 		switch (this->get_Level())
@@ -362,14 +436,14 @@ void entertocontinue(string aby)							/// "Nacisnij Enter aby (zadana wiadomosc
 	
 	void Player::move(int whereto) 
 	{
-		cout << "\nIdziesz dalej, przechodzisz do kolejnego pomieszczenia..."
-			<< "\nJak daleko jeszcze?";
 		Sleep(2000);
 		this->room_placement = whereto;
 	}
 
 	int Player::get_Luck() { return this->Luck; }
+	void Player::set_Luck(int value) { this->Luck = value; }
 	int Player::get_Exp() {return this->Experience;}
+	void Player::set_Xp(int value) { this->Experience = value; }
 	int Player::get_Next_Lvl_Exp() {return this->Next_Level_Xp;}
 	void Player::Luck_up(int change) { this->Luck += change; }
 	void Player::Exp_Increase(int value) 
@@ -398,25 +472,26 @@ void entertocontinue(string aby)							/// "Nacisnij Enter aby (zadana wiadomosc
 		critical_success = rand() % 100 + 1 + tempLuck;
 
 		cout << "\n\nAtakujesz wroga!";
-		Sleep(1000);
-		if (enemy_dodge_success < 70)										///kryterium uniku przeciwnika
+		waitsec(1);
+		if (enemy_dodge_success < 80)										///kryterium uniku przeciwnika
 		{
 			if (critical_success >= 80)										///kryterium zadania trafienia krytycznego
 			{
 				damage = tempStr * 10;
-				cout << "\nTrafienie krytyczne!"
-					<< "\nZadales " << damage << "obrazen"
-					<< "\nTo musialo zabolec...";
+				cout << "Trafienie krytyczne!";
+				Sleep(1000);
+				cout << "\nZadales " << damage << " obrazen"
+					 << "\nTo musialo zabolec...";
 			}
 			else
 			{
 				damage = (rand() % tempStr + 1)*damage_multiplier;
-				cout << "\nZadales " << damage << "obrazen";
+				cout << "Zadales " << damage << " obrazen";
 			}
 		}
 		else
 		{
-			cout << "\nPrzeciwnik uniknal ataku!";
+			cout << "Przeciwnik uniknal ataku!";
 			damage = 0;
 		}
 		enemy.attacked(damage);												///odjecie zadanych obrazen
@@ -432,107 +507,107 @@ void entertocontinue(string aby)							/// "Nacisnij Enter aby (zadana wiadomosc
 		player_dodge_success = rand() % 100 + 1 + tempDex + tempLuck;
 
 		cout << "\n\n" << enemy.get_Name() << " atakuje!";
-		Sleep(1000);
+		waitsec(1);
 		if (player_dodge_success < 70)										/// kryterium uniku gracza
 		{
 			damage = (rand() % tempStr + 1)*damage_multiplier;
-			cout << "\nOtrzymales " << damage << "obrazen\n";
+			cout << "Otrzymales " << damage << " obrazen\n";
 		}
 		else
 		{
-			cout << "\nUdalo ci sie uniknac ataku!\n";
+			cout << "Udalo ci sie uniknac ataku!\n";
 			damage = 0;
 		}
 		
 		this->attacked(damage);
+		waitsec(2);
 	}
 
 	void Player::player_rest()									///odpoczynek odnawia czesc zdrowia
 	{
 		int tempFat = this->get_Fatty();
 		int Hp_Max = this->get_Max_Hp();
+		int Hp_before = this->get_Current_Hp();
 		int Max_Heal = ((Hp_Max / 2) - 5 * tempFat);
-		int Hp_heal;
+		int Hp_heal, healed_value;
 		cout << "\nRobisz krok w tyl aby na ulamek sekundy odpoczac od trudnej walki";
-		Sleep(2000);
+		waitsec(2);
 		Hp_heal = (rand() % Max_Heal + 1) + 5 * tempFat;
 		this->Current_Hp_heal(Hp_heal);
-		cout << "\n Udalo ci sie odzyskac " << Hp_heal << " zdrowia";
+		healed_value = this->get_Current_Hp() - Hp_before;
+		cout << "Udalo ci sie odzyskac " << healed_value << " zdrowia";
 	}
 
-	void Player::combat(Character &enemy)
+	bool Player::combat(Character &enemy)
 	{
-		clear_screen();
-		cout << "\nNie zatrzymujesz sie, przesz do przodu."
-			<< "\nPrzed toba pojawia sie nagle...";
-		Sleep(1000);
-		cout << "Nie...";
-		Sleep(1000);
-		cout << "Czy to naprawde " << enemy.get_Name() << "?!\n";
-		Sleep(1000);
-		draw_line();
-		cout << "\n.";
-		Sleep(1000);
-		cout << "\n.";
-		Sleep(1000);
-		cout << "\n.";
-		Sleep(1000);
-		clear_screen();
-		cout << "\nBez strachu stajesz do walki z "<< enemy.get_Name();
-		Sleep(1000);
-		do
+		if (this->get_placement() == enemy.get_placement())
 		{
-			draw_line();
-			cout << "\nZdrowie przeciwnika: " << enemy.get_Current_Hp();
-			cout << "\nTwoje zdrowie: " << this->get_Current_Hp() << "\n\n"
-				<< "Co robisz?\n"
-				<< "1. Atak\n"
-				<< "2. Odpoczynek\t\t";
-			short decision;
-			bool valid;											///wybor akcji gracza
+			waitsec(3);
+			clear_screen();
+			cout << "\nBez strachu stajesz do walki z " << enemy.get_Name();
+			Sleep(1000);
 			do
 			{
-				cin >> decision;
-				switch (decision)
+				draw_line();
+				cout << "\nZdrowie przeciwnika: " << enemy.get_Current_Hp();
+				cout << "\nTwoje zdrowie: " << this->get_Current_Hp() << "\n\n"
+					<< "Co robisz?\n"
+					<< "1. Atak\n"
+					<< "2. Odpoczynek\t\t";
+				short decision;
+				bool valid;											///wybor akcji gracza
+				do
 				{
-				case 1:
+					cin >> decision;
+					switch (decision)
+					{
+					case 1:
+						Sleep(1000);
+						this->player_attack(enemy);
+						valid = true;
+						break;
+					case 2:
+						Sleep(1000);
+						this->player_rest();
+						valid = true;
+						break;
+					default:
+						cout << "Niepoprawny wybor! Wybierz wartosc z przedzialu {1,2}";
+						valid = false;
+						break;
+					}
+
+				} while (!valid);
+				///przeciwnik atakuje zawsze, po graczu
+				if (enemy.get_Current_Hp() > 1)									///o ile jeszcze zyje	
+				{
 					Sleep(1000);
-					this->player_attack(enemy);
-					valid = true;
-					break;
-				case 2:
-					Sleep(1000);
-					this->player_rest();
-					valid = true;
-					break;
-				default:
-					cout << "Niepoprawny wybor! Wybierz wartosc z przedzialu {1,2}";
-					valid = false;
-					break;
+					this->enemy_attack(enemy);
 				}
+			} while ((this->get_Current_Hp() > 1) && (enemy.get_Current_Hp() > 1));
 
-			} while (!valid);
-																			///przeciwnik atakuje zawsze, po graczu
-			if (enemy.get_Current_Hp() > 1)									///o ile jeszcze zyje	
+			if (enemy.get_Current_Hp() < 1)
 			{
-				this->enemy_attack(enemy);								
-			}
-		} while ( (this->get_Current_Hp()>1) && (enemy.get_Current_Hp()>1) );
-		
-		if (enemy.get_Current_Hp() < 1)
-		{
-			int added_exp = (enemy.get_Level()) * 10 + 70;
-			cout << "\n\nZWYCIESTWO"
-				<< "\n Zdobywasz " << added_exp << " punktow doswiadczenia";
-			this->Exp_Increase(added_exp);
+				int added_exp = (enemy.get_Level()) * 10 + 120;
+				waitsec(2);
+				cout << "ZWYCIESTWO"
+					<< "\nZdobywasz " << added_exp << " punktow doswiadczenia";
+				this->Exp_Increase(added_exp);
 
-			enemy.character_death();
-			//proceed...
+				enemy.character_death();
+				return TRUE;										///jesli wygrana to metoda zwraca 'true'
+			}
+			else if (this->get_Current_Hp() < 1)
+			{
+				waitsec(2);
+				cout << "Porazka"
+					<< "\nNo to nie zyjesz...";
+				this->player_death();
+				return FALSE;										///jesli przegrana to 'false'
+			}
 		}
-		else if (this->get_Current_Hp() < 1)
-		{
-			this->player_death();
-		}
+		else cerr << "BLAD - LOKALIZACJE NIEROWNE !!!";
+		return false;
 	}
 
 

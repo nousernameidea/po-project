@@ -9,6 +9,7 @@ int get_console_width();
 void draw_line();
 void clear_screen();
 void entertocontinue(string aby);
+void waitsec(short);
 
 class Character	//postac i przeciwnicy
 {
@@ -25,22 +26,31 @@ public:
 	Character(string name, int lvl, short placement);
 
 	string get_Name();
-
+	void set_Name(string);
+	
+	void set_Level(int);
 	int get_Level();
+	
 	short get_placement();
+	void set_placement(short);
 
 	int get_Strength();
+	void set_Strength(int);
 	void Strength_up(int change);
 
 	int get_Fatty();
+	void set_Fatty(int);
 	void Fatty_up(int change);
 
 	int get_Current_Hp();
+	void set_Current_Hp(int);
 	int get_Max_Hp();
 	void set_Max_Hp();
+	void load_Max_Hp(int);
 	void print_hp();
 
 	int get_Dexterity();
+	void set_Dexterity(int);
 	void Dexterity_up(int change);
 
 	void print_stats();
@@ -57,8 +67,9 @@ protected:
 	vector <Item> Equipment;
 public:
 	const int rest_multiplier = 5;
-	Player() {}
+	Player();
 	Player(int lv);
+	Player(string loadname);
 	Player(const Player& object) 
 	{
 		this->operator=(object);
@@ -86,9 +97,17 @@ public:
 	void Current_Hp_heal(int value);
 	void Current_Hp_fullheal();
 	void add_item_to_eq(Item&);
+	void load_item_to_eq(Item&);
+	void add_item_load(string);
 	void print_equipment();
+	size_t get_eq_size();
+	string get_eq_item_name(int);
+	int get_eq_item_attribute(int);
+	int get_eq_item_modifier(int);
 	int get_Luck();
+	void set_Luck(int);
 	int get_Exp();
+	void set_Xp(int);
 	int get_Next_Lvl_Exp();
 	void Luck_up(int change);
 	void Exp_Increase(int value);
@@ -96,7 +115,7 @@ public:
 	void player_attack(Character&);
 	void enemy_attack(Character&);
 	void player_rest();
-	void combat(Character&);
+	bool combat(Character&);						///drobna zmiana
 };
 
 #endif
