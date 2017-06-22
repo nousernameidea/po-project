@@ -287,7 +287,7 @@ The_Game::The_Game(bool loadgame)
 				waitsec(1);
 				cout << "Stajesz przed Rewolwerowcem";
 				Sleep(2000);
-				cout << "Wyglada na dosyc wyrewolwerowanego.";
+				cout << "\nWyglada na dosyc wyrewolwerowanego.";
 				waitsec(1);
 				entertocontinue("stanac do walki");
 				//##################################
