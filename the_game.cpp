@@ -415,11 +415,12 @@ The_Game::The_Game(bool loadgame)
 				cout << "Potwor znika.";
 				Sleep(1000);
 				cout << "\nTo milo z jego strony, ze jako jedyny w tym chorym miejscu nie chcial cie zabic.";
-				waitsec(2);
+				Sleep(2000);
 				entertocontinue("przeszukac kieszenie...");
 
 				found_item("Ekskluzywny Amulet Wyznawcy Latajacego Potwora Spaghetti", Attribute_Luck, 5);
 				after_fight_menu();
+				break;
 				//##################################
 				
 			case CCR1:
@@ -508,7 +509,7 @@ The_Game::The_Game(bool loadgame)
 				cout << "\n  A ja nie zamierzam sie poddac.";
 				entertocontinue("stanac do walki");
 				//##################################
-				if (this->room_fight("Mroczny mag Deficytus", 6, PRE_BOSS) == true)
+				if (this->room_fight("Mroczny mag Deficytus", 10, PRE_BOSS) == true)
 				{
 					waitsec(2);
 					cout << "Przeszukujesz pozostalosci po przeciwniku...";
@@ -541,7 +542,7 @@ The_Game::The_Game(bool loadgame)
 				cout << "Musisz walczyc o zycie!";
 				entertocontinue("stanac do walki");
 				//##################################
-				if (this->room_fight("MORDERCZY, SADYSTYCZNY, KRWAWY, DEMONICZNY PUCHATY KROLICZEK", 10, BOSS) == true)
+				if (this->room_fight("MORDERCZY, SADYSTYCZNY, KRWAWY PUCHATY KROLICZEK", 15, BOSS) == true)
 				{
 					waitsec(2);
 					cout << "Nareszcie... Juz po wszystkim.";
@@ -566,6 +567,7 @@ The_Game::The_Game(bool loadgame)
 		else
 			{
 				waitsec(2);
+				clear_screen();
 				cout << "\t\t\tGAME OVER.";
 				waitsec(2);
 				entertocontinue("zakonczyc");
@@ -624,38 +626,56 @@ void The_Game::game_proceed(bool save)
 			Sleep(1000);
 			if (save == true) game_save();
 			this->player.move(C1);
-		draw_line();
+		//draw_line();
 		break;
 	case CL1:
 		Sleep(1000);
 		draw_line();
 		this->proceed_nochoice(CL2);
 		if (save == true) game_save();
-		draw_line();
+		//draw_line();
 		break;
 	case CR1:
 		Sleep(1000);
 		draw_line();
 		this->proceed_nochoice(CR2);
 		if (save == true) game_save();
-		draw_line();
+		//draw_line();
 		break;
 	case CL3:
 		Sleep(1000);
 		draw_line();
 		this->proceed_nochoice(CL4);
 		if (save == true) game_save();
-		draw_line();
+		//draw_line();
 		break;
 	case CL4:
+		Sleep(1000);
+		draw_line();
+		this->proceed_nochoice(PRE_BOSS);
+		if (save == true) game_save();
+		//draw_line();
+		break;
 	case CCL1:
+		Sleep(1000);
+		draw_line();
+		this->proceed_nochoice(PRE_BOSS);
+		if (save == true) game_save();
+		//draw_line();
+		break;
 	case CCR1:
+		Sleep(1000);
+		draw_line();
+		this->proceed_nochoice(PRE_BOSS);
+		if (save == true) game_save();
+		//draw_line();
+		break;
 	case CR4:
 		Sleep(1000);
 		draw_line();
 		this->proceed_nochoice(PRE_BOSS);
 		if (save == true) game_save();
-		draw_line();
+		//draw_line();
 		break;
 	case PRE_BOSS:
 		Sleep(1000);
@@ -681,7 +701,7 @@ void The_Game::game_proceed(bool save)
 		Sleep(1000);
 		draw_line();
 		this->choose_path(CL1, CR1);
-		draw_line();
+		//draw_line();
 		break;
 	case CL2:
 		this->player.move(CL2_Choice);
@@ -690,7 +710,7 @@ void The_Game::game_proceed(bool save)
 		Sleep(1000);
 		draw_line();
 		this->choose_path(CL3, CC1);
-		draw_line();
+		//draw_line();
 		break;
 	case CR2:
 		this->player.move(CR2_Choice);
@@ -699,7 +719,7 @@ void The_Game::game_proceed(bool save)
 		Sleep(1000);
 		draw_line();
 		this->choose_path(CC1, CR3);
-		draw_line();
+		//draw_line();
 		break;
 	case CC1:
 		this->player.move(CC1_Choice);
@@ -708,7 +728,7 @@ void The_Game::game_proceed(bool save)
 		Sleep(1000);
 		draw_line();
 		this->choose_path(CCL1, CCR1);
-		draw_line();
+		//draw_line();
 		break;
 	case CR3:
 		this->player.move(CR3_Choice);
@@ -717,7 +737,7 @@ void The_Game::game_proceed(bool save)
 		Sleep(1000);
 		draw_line();
 		this->choose_path(CCR1, CR4);
-		draw_line();
+		//draw_line();
 		break;
 	}
 }

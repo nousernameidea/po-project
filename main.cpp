@@ -34,6 +34,7 @@ int main()
 				cout << "\n\n\t\t\t\tNowa gra\n";
 				waitsec(3);
 				The_Game new_game(false);
+				validstart = true;
 				break; 
 			}
 			case 2:
@@ -41,12 +42,14 @@ int main()
 				cout << "\n\n\t\t\t\tWczytywanie...";
 				waitsec(3);
 				The_Game load_game(true);
+				validstart = true;
 				break;
 			}
 		case 3:
 		{
 			entertocontinue("zakonczyc...");
 			exit(0);
+			validstart = true;
 			break;
 		}
 		default:
@@ -58,22 +61,6 @@ int main()
 		}
 	} while (!validstart);
 	
-	
-	/*
-	Player test1(1);
-	Character enemy1("maly pedal", 1, ENTRANCE);
-	enemy1.print_stats();
-	bool testinio = test1.combat(enemy1);
-	test1.print_stats();
-	enemy1.print_stats();
-
-	Character enemy2("ciota", 2, ENTRANCE);
-	test1.combat(enemy2);
-	test1.print_stats();
-	entertocontinue("kontynuowac");
-	*/
-
-	entertocontinue("zakonczyc dzialanie gry");
 	return 0;
 }
 

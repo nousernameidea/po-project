@@ -4,7 +4,11 @@
 
 using namespace std;
 
-int get_console_width()											///szerokosc konsoli, potrzebna do narysowania linii
+/// <summary>
+/// Used to draw a '#' line
+/// </summary>
+/// <returns>Returns the width of the console.</returns>
+int get_console_width()
 {
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	int columns;
@@ -13,7 +17,11 @@ int get_console_width()											///szerokosc konsoli, potrzebna do narysowania
 	columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
 	return columns;
 }
-void draw_line()												///rysowanie linii o dlugosci rownej szerokosci konsoli
+
+/// <summary>
+/// Draws the line.
+/// </summary>
+void draw_line()
 {
 	cout << "\n";
 	for (int i = 0; i < get_console_width(); i++)
@@ -23,12 +31,19 @@ void draw_line()												///rysowanie linii o dlugosci rownej szerokosci kons
 	cout << "\n";
 }
 
-void clear_screen()											///czyszczenie ekranu
+/// <summary>
+/// Clears the screen.
+/// </summary>
+void clear_screen()
 {
-	cout << string(100, '\n');
+	cout << string(80, '\n');
 }
 
-void entertocontinue(string aby)							/// "Nacisnij Enter aby (zadana wiadomosc)
+/// <summary>
+/// A little loop used to pause the game until player presses 'Enter'
+/// </summary>
+/// <param name="aby">string which will be printed, for example (... aby kontynuowac)</param>
+void entertocontinue(string aby)
 {
 	bool validexit;
 	char enterpressed;
@@ -43,8 +58,13 @@ void entertocontinue(string aby)							/// "Nacisnij Enter aby (zadana wiadomosc
 	} while (!validexit);
 }
 
-void waitsec(short seconds)										///funkcja "czekaj" dodatkowo z oddzieleniem linii
-{																///zwyklego "Sleep" uzywam kiedy nie chce odstepow.
+/// <summary>
+/// A 'Sleep' function with printing a new line;
+/// A regular 'Sleep' function is used on purpose, when I don't want an empty line.
+/// </summary>
+/// <param name="seconds">How many seconds</param>
+void waitsec(short seconds)
+{
 	if ((seconds == 1) || (seconds == 2))
 	{
 		Sleep(1000 * seconds);
@@ -67,7 +87,13 @@ void waitsec(short seconds)										///funkcja "czekaj" dodatkowo z oddzielenie
 		this->Level = 1;
 	}
 
-	Character::Character(string name, int lvl, short placement)		///konstruktor przeciwnika
+	/// <summary>
+	/// Initializes a new instance of the <see cref="Character"/> class.
+	/// </summary>
+	/// <param name="name">Character name.</param>
+	/// <param name="lvl">Character level.</param>
+	/// <param name="placement">Character placement.</param>
+	Character::Character(string name, int lvl, short placement) 
 	{
 		this->Name = name;
 		this->Level = lvl;
@@ -95,32 +121,41 @@ void waitsec(short seconds)										///funkcja "czekaj" dodatkowo z oddzielenie
 		this->Current_Hp = this->Max_Hp;
 	}
 
-	string Character::get_Name() { return this->Name; }							///metody do operowania statystykami
-	void Character::set_Name(string name) { this->Name = name; }
+	string Character::get_Name() { return this->Name; }								void Character::set_Name(string name) { this->Name = name; }
+	
 	void Character::set_Level(int lvl) { this->Level = lvl; }
 	int Character::get_Level() { return this->Level; }
 	short Character::get_placement() {return this->room_placement;}
+	
 	void Character::set_placement(short dest) { this->room_placement = dest; }
 	int Character::get_Strength() { return this->Strength; }
-	void Character::set_Strength(int str) { this->Strength = str; }
+	
+	void Character::set_Strength(int value) { this->Strength = value; }
 	void Character::Strength_up(int change) { this->Strength += change; }
 	int Character::get_Fatty() { return this->Fatty; }
-	void Character::set_Fatty(int fat) { this->Fatty = fat; }
+	
+	void Character::set_Fatty(int value) { this->Fatty = value; }
 	void Character::Fatty_up(int change) 
 	{
 		this->Fatty += change;
 		set_Max_Hp();
 	}
 	int Character::get_Current_Hp() { return this->Current_Hp; }
+	
 	void Character::set_Current_Hp(int value) { this->Current_Hp = value; }
 	int Character::get_Max_Hp() { return this->Max_Hp; }
 	void Character::set_Max_Hp() { this->Max_Hp = 100 + ((this->Fatty) * 10); }
+	
 	void Character::load_Max_Hp(int value) { this->Max_Hp = value; }
 	void Character::print_hp() { cout << "\nPoziom zdrowia " << get_Name() << ": " << get_Current_Hp() << "/" << get_Max_Hp(); }
 	int Character::get_Dexterity() { return this->Dexterity; }
+	
 	void Character::set_Dexterity(int value) { this->Dexterity = value; }
 	void Character::Dexterity_up(int change) { this->Dexterity += change; }
 
+	/// <summary>
+	/// Prints player statistics.
+	/// </summary>
 	void Character::print_stats()
 	{
 		draw_line();
@@ -133,13 +168,11 @@ void waitsec(short seconds)										///funkcja "czekaj" dodatkowo z oddzielenie
 		draw_line();
 	}
 
-	void Character::attacked(int damage_taken)								///odejmuje hp
-	{
+	void Character::attacked(int damage_taken)									{
 		this->Current_Hp -= damage_taken;
 	}
 
-	void Character::character_death()										///przeciwnik ginie
-	{
+	void Character::character_death()											{
 		this->room_placement = HELL;
 		this->Current_Hp = 0;
 		this->Max_Hp = 0;
@@ -151,8 +184,7 @@ void waitsec(short seconds)										///funkcja "czekaj" dodatkowo z oddzielenie
 
 	Player::Player() {}
 
-	Player::Player(int lv)										///konstruktor postaci gracza
-	{
+	Player::Player(int lv)											{
 		this->Level = lv;
 		this->Experience = 0;
 		this->Set_Next_Lvl_Xp();
@@ -244,6 +276,10 @@ void waitsec(short seconds)										///funkcja "czekaj" dodatkowo z oddzielenie
 		Sleep(1000);
 		entertocontinue("rozpoczac przygode...");
 	}
+
+
+
+
 
 	Player::Player(string loadname)
 	{
@@ -523,8 +559,7 @@ void waitsec(short seconds)										///funkcja "czekaj" dodatkowo z oddzielenie
 		waitsec(2);
 	}
 
-	void Player::player_rest()									///odpoczynek odnawia czesc zdrowia
-	{
+	void Player::player_rest()										{
 		int tempFat = this->get_Fatty();
 		int Hp_Max = this->get_Max_Hp();
 		int Hp_before = this->get_Current_Hp();
@@ -537,6 +572,7 @@ void waitsec(short seconds)										///funkcja "czekaj" dodatkowo z oddzielenie
 		healed_value = this->get_Current_Hp() - Hp_before;
 		cout << "Udalo ci sie odzyskac " << healed_value << " zdrowia";
 	}
+
 
 	bool Player::combat(Character &enemy)
 	{
@@ -578,7 +614,7 @@ void waitsec(short seconds)										///funkcja "czekaj" dodatkowo z oddzielenie
 					}
 
 				} while (!valid);
-				///przeciwnik atakuje zawsze, po graczu
+																				///przeciwnik atakuje zawsze, po graczu
 				if (enemy.get_Current_Hp() > 1)									///o ile jeszcze zyje	
 				{
 					Sleep(1000);
